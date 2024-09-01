@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "See for yourself",
   "scripts": {
-    "release":"bumpp"
+    "release":"bumpp --all"
   },
   "keywords": [],
   "author": "tofu-xx",
