@@ -1,0 +1,14 @@
+{
+  "name": "chatego",
+  "version": "0.0.1",
+  "description": "See for yourself",
+  "scripts": {
+    "release":"bumpp"
+  },
+  "keywords": [],
+  "author": "tofu-xx",
+  "license": "MIT",
+  "devDependencies": {
+    "bumpp": "^9.5.2"
+  }
+}
