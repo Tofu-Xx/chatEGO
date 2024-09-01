@@ -1,0 +1,282 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico">
+  <title>微信，是一个生活方式</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/html-vue-setup/dist/main.umd.js"></script>
+  <script src="./tool.js"></script>
+</head>
+
+
+<script setup>
+  const chatKey = 'demo:chat-key';
+  const historyKey = 'demo:history-key';
+  const leftImgUrlKey = 'demo:--left-img-url';
+  const rightImgUrlKey = 'demo:--right-img-url';
+  /*  */
+  const m10 = 1000 * 60 * 10;
+  const week = 1000 * 60 * 60 * 24 * 7;
+  /*  */
+  // const main = $('main');
+  const chatData = ref(getLoacl(chatKey) || []);
+  const leftMsg = ref('');
+  const rightMsg = ref('');
+
+  watchEffect(() => {
+    setLoacl(chatKey, chatData.value);
+    console.log('chatData', chatData.value)
+  });
+
+  const addMsg = (cls, msg) => {
+    if (!msg.trim().length) return;
+    const time = new Date().getTime();
+    chatData.value.push({ cls, msg, time });
+  };
+
+  const handleSentMsg = (cls) => {
+    switch (cls) {
+      case 'left': {
+        addMsg(cls, leftMsg.value);
+        leftMsg.value = '';
+      } break;
+      case 'right': {
+        addMsg(cls, rightMsg.value);
+        rightMsg.value = '';
+      } break;
+      default: return;
+    }
+  };
+  /*  */
+  const getLastTime = () => $$('[time]').at(-1)?.getAttribute('time') || 0;
+
+
+  /*  */
+  getLoacl(leftImgUrlKey) && setCssVar('--left-img-url', getLoacl(leftImgUrlKey));
+  getLoacl(rightImgUrlKey) && setCssVar('--right-img-url', getLoacl(rightImgUrlKey));
+  /*  */
+  const changeImg = (cls) => {
+    const msg = prompt('请输入头像图片链接');
+    if (typeof msg !== "string" || !msg.trim().length) return;
+    const imgUrl = `url(${msg})`;
+    const cssVar = `--${cls}-img-url`;
+    setCssVar(cssVar, imgUrl);
+    setLoacl(`FAKE-CHAT-HISTORY:${cssVar}`, imgUrl);
+  };
+  /*  */
+  const navRef = ref(null);
+  const navFns = ref({
+    '设置时间': () => { },
+    '清空记录': () => {
+      setLoacl(historyKey, getLoacl(historyKey) + main.innerHTML);
+      delLoacl(chatKey);
+      renderChat();
+    },
+    '查看历史': () => {
+      main.innerHTML = getLoacl(historyKey) || '';
+    }
+  });
+  const showNav = (e) => {
+    console.log(e);
+    navRef.value.removeAttribute('hidden');
+    navRef.value.style.top = e.y;
+    navRef.value.style.left = e.x;
+    navRef.value.focus();
+  };
+  const hideNav = () => {
+    navRef.value.setAttribute('hidden', '');
+  };
+</script>
+
+
+<div id="app">
+  <main @contextmenu.prevent="showNav($event)">
+    <div v-for="{cls, msg,time} of chatData" :class="cls" :time>
+      <template v-if="cls==='time'">{{ new Date(time).toLocaleString() }}</template>
+      <template v-else>
+        <div></div>
+        <p>{{msg}}</p>
+      </template>
+    </div>
+  </main>
+  <form>
+    <input type="text" v-model="leftMsg" @keydown.enter="handleSentMsg('left')">
+    <input type="text" v-model="rightMsg" @keydown.enter="handleSentMsg('right')">
+  </form>
+  <nav ref="navRef" hidden tabindex="1" @blur="hideNav">
+    <button v-for="[k,v] of Object.entries(navFns)" :key="k" @click="v">{{k}}</button>
+  </nav>
+</div>
+
+
+
+
+
+<style>
+  @import "https://unpkg.com/tofukit/tools/reset.css";
+
+  /*  */
+  :root {
+    --left-img-url: url(https://sfile.chatglm.cn/chatglm4/2e3dfc3c-72b9-437d-9541-34a0fe4582c2.jpg?image_process=format,webp);
+    --right-img-url: url(https://sfile.chatglm.cn/chatglm4/5efd5b2c-4952-43a3-b76e-d9d3fde03da4.jpg?image_process=format,webp);
+  }
+
+  #app {
+    margin: auto;
+    padding: 40px 0;
+    width: 70vw;
+
+    main {
+      scrollbar-width: thin;
+      height: calc(100vh - 130px);
+      overflow-y: auto;
+      padding: 10px 0;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .time {
+        width: fit-content;
+        height: min-content;
+        padding: .1em .5em;
+        align-self: center;
+        background-color: #8884;
+        border-radius: .3em;
+        color: #fff;
+      }
+
+      .left,
+      .right {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        padding: 0 24px;
+
+
+        &:is(.left) {
+          direction: ltr;
+          --img-url: var(--left-img-url);
+          --translate: translate(64px, 0);
+
+          p,
+          div::before {
+            background-color: #fff;
+          }
+        }
+
+        &:is(.right) {
+          direction: rtl;
+          --img-url: var(--right-img-url);
+          --translate: translate(-64px, 0);
+
+          p,
+          div::before {
+            background-color: #95ec69;
+          }
+        }
+
+        div {
+          background: var(--img-url) center/cover;
+          width: 34px;
+          height: 34px;
+          border-radius: 3px;
+          position: relative;
+          cursor: pointer;
+
+          &::before {
+            content: '';
+            display: block;
+            width: 34px;
+            height: 34px;
+            border-radius: 3px;
+            position: absolute;
+            transform: scale(.5) var(--translate) rotate(45deg);
+          }
+        }
+
+        p {
+          max-width: 60%;
+          width: fit-content;
+          padding: 5px 8px;
+          direction: ltr !important;
+          border-radius: 3px;
+          display: grid;
+          place-content: center;
+          z-index: 10;
+        }
+
+
+      }
+    }
+
+    form {
+      display: flex;
+      /* flex-wrap: wrap; */
+      width: 100%;
+      height: 50px;
+
+      input {
+        flex: 1;
+        border: 2px solid;
+        text-indent: 1em;
+        min-width: 0;
+
+
+
+        &:first-child {
+          border-color: #f5f5f5;
+        }
+
+        &:last-child {
+          border-color: #95ec69;
+        }
+
+        &:focus {
+          outline: #6666 2px solid;
+          z-index: 10;
+        }
+      }
+    }
+
+    nav {
+      font-size: small;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: .2em;
+      z-index: 10;
+      outline: none;
+      background-color: #f5f5f588;
+
+      &:focus-within {
+        display: flex !important;
+      }
+
+      button {
+        box-shadow: 1px 1px 5px #6666;
+        padding: .2em .6em;
+        border-radius: .2em;
+        background-color: #fff;
+        border: transparent solid 1px;
+        cursor: pointer;
+        transition: all .2s ease-in-out;
+
+        &:hover {
+          border: #6666 solid 1px;
+        }
+
+        &:active {
+          border: transparent solid 1px;
+          transform: translate(-1px, -2px);
+        }
+      }
+    }
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+</style>
