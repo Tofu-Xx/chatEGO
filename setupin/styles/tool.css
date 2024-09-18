@@ -1,0 +1,11 @@
+@import "https://unpkg.com/tofukit/dist/reset.css";
+
+/*  */
+:root {
+  --right-img-url: url(https://sfile.chatglm.cn/chatglm4/2e3dfc3c-72b9-437d-9541-34a0fe4582c2.jpg?image_process=format,webp);
+  --left-img-url: url(https://sfile.chatglm.cn/chatglm4/5efd5b2c-4952-43a3-b76e-d9d3fde03da4.jpg?image_process=format,webp);
+}
+
+[hidden] {
+  display: none !important;
+}

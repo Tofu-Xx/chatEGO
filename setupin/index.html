@@ -3,17 +3,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="image/x-icon" href="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico">
   <title>微信，是一个生活方式</title>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <script src="https://unpkg.com/html-vue-setup/dist/main.umd.js"></script>
-  <script src="./tool.js"></script>
+  <script src="https://unpkg.com/setupin/dist/main.umd.js"></script>
+  <script src="./tools/main.js"></script>
 </head>
 
 
 <script setup>
-  const chatKey = 'demo:chat-key';
-  const historyKey = 'demo:history-key';
-  const leftImgUrlKey = 'demo:--left-img-url';
-  const rightImgUrlKey = 'demo:--right-img-url';
+  const chatKey = 'chat-key';
+  const historyKey = 'history-key';
+  const leftImgUrlKey = '--left-img-url';
+  const rightImgUrlKey = '--right-img-url';
   /*  */
   const m10 = 1000 * 60 * 10;
   const week = 1000 * 60 * 60 * 24 * 7;
@@ -25,7 +24,7 @@
 
   watchEffect(() => {
     setLoacl(chatKey, chatData.value);
-    console.log('chatData', chatData.value)
+    console.log('chatData', chatData.value);
   });
 
   const addMsg = (cls, msg) => {
@@ -89,7 +88,7 @@
 </script>
 
 
-<div id="app">
+<template>
   <main @contextmenu.prevent="showNav($event)">
     <div v-for="{cls, msg,time} of chatData" :class="cls" :time>
       <template v-if="cls==='time'">{{ new Date(time).toLocaleString() }}</template>
@@ -106,22 +105,16 @@
   <nav ref="navRef" hidden tabindex="1" @blur="hideNav">
     <button v-for="[k,v] of Object.entries(navFns)" :key="k" @click="v">{{k}}</button>
   </nav>
-</div>
+</template>
 
 
 
 
 
 <style>
-  @import "https://unpkg.com/tofukit/tools/reset.css";
-
-  /*  */
-  :root {
-    --left-img-url: url(https://sfile.chatglm.cn/chatglm4/2e3dfc3c-72b9-437d-9541-34a0fe4582c2.jpg?image_process=format,webp);
-    --right-img-url: url(https://sfile.chatglm.cn/chatglm4/5efd5b2c-4952-43a3-b76e-d9d3fde03da4.jpg?image_process=format,webp);
-  }
-
-  #app {
+  @import "./styles/tool.css";
+  
+  body {
     margin: auto;
     padding: 40px 0;
     width: 70vw;
@@ -274,9 +267,5 @@
         }
       }
     }
-  }
-
-  [hidden] {
-    display: none !important;
   }
 </style>

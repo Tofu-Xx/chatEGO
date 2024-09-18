@@ -5,11 +5,12 @@
   <title>微信，是一个生活方式</title>
 </head>
 <style>
-  @import "https://unpkg.com/tofukit/tools/reset.css";
+  @import "https://unpkg.com/tofukit/dist/reset.css";
+
   /*  */
   :root {
-    --left-img-url: url(https://sfile.chatglm.cn/chatglm4/2e3dfc3c-72b9-437d-9541-34a0fe4582c2.jpg?image_process=format,webp);
-    --right-img-url: url(https://sfile.chatglm.cn/chatglm4/5efd5b2c-4952-43a3-b76e-d9d3fde03da4.jpg?image_process=format,webp);
+    --right-img-url: url(https://sfile.chatglm.cn/chatglm4/2e3dfc3c-72b9-437d-9541-34a0fe4582c2.jpg?image_process=format,webp);
+    --left-img-url: url(https://sfile.chatglm.cn/chatglm4/5efd5b2c-4952-43a3-b76e-d9d3fde03da4.jpg?image_process=format,webp);
   }
 
   body {
@@ -201,10 +202,10 @@
 </script>
 
 <script>
-  const chatKey = 'FAKE-CHAT-HISTORY:chat-key';
-  const historyKey = 'FAKE-CHAT-HISTORY:history-key';
-  const leftImgUrlKey = 'FAKE-CHAT-HISTORY:--left-img-url';
-  const rightImgUrlKey = 'FAKE-CHAT-HISTORY:--right-img-url';
+  const chatKey = 'chat-key';
+  const historyKey = 'history-key';
+  const leftImgUrlKey = '--left-img-url';
+  const rightImgUrlKey = '--right-img-url';
   /*  */
   const m10 = 1000 * 60 * 10;
   const week = 1000 * 60 * 60 * 24 * 7;
@@ -248,7 +249,7 @@
     const imgUrl = `url(${msg})`;
     const cssVar = `--${cls}-img-url`;
     setCssVar(cssVar, imgUrl);
-    setLoacl(`FAKE-CHAT-HISTORY:${cssVar}`, imgUrl);
+    setLoacl(`${cssVar}`, imgUrl);
   };
   /*  */
   const nav = $('nav');
