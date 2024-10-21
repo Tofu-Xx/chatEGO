@@ -3,21 +3,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="image/x-icon" href="https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico">
   <title>微信，是一个生活方式</title>
-  <script src="https://unpkg.com/setupin/dist/main.umd.js"></script>
-  <script src="./tools/main.js"></script>
+  <script src="https://unpkg.com/setupin"></script>
+  <!-- <script src="./tools/main.js"></script> -->
 </head>
 
 
 <script setup>
-  const chatKey = 'chat-key';
-  const historyKey = 'history-key';
-  const leftImgUrlKey = '--left-img-url';
-  const rightImgUrlKey = '--right-img-url';
+  const $ = document.querySelector.bind(document);
+  const $$ = (s) => Array(...document.querySelectorAll.bind(document)(s));
+  const setCssVar = document.documentElement.style.setProperty.bind(document.documentElement.style);
+  const getCssVar = document.documentElement.style.getPropertyValue.bind(document.documentElement.style);
+  const setLoacl = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+  const getLoacl = (key) => localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : undefined;
+  const delLoacl = localStorage.removeItem.bind(localStorage);
+  /*  */
+  const chatKey = 'setupin:chat';
+  const historyKey = 'setupin:history';
+  const leftImgUrlKey = 'setupin:--left-img-url';
+  const rightImgUrlKey = 'setupin:--right-img-url';
   /*  */
   const m10 = 1000 * 60 * 10;
   const week = 1000 * 60 * 60 * 24 * 7;
   /*  */
-  // const main = $('main');
+  const main = $('main');
   const chatData = ref(getLoacl(chatKey) || []);
   const leftMsg = ref('');
   const rightMsg = ref('');
@@ -29,8 +37,7 @@
 
   const addMsg = (cls, msg) => {
     if (!msg.trim().length) return;
-    const time = new Date().getTime();
-    chatData.value.push({ cls, msg, time });
+    chatData.value.push({ cls, msg, time:new Date().getTime() });
   };
 
   const handleSentMsg = (cls) => {
@@ -53,7 +60,7 @@
   /*  */
   getLoacl(leftImgUrlKey) && setCssVar('--left-img-url', getLoacl(leftImgUrlKey));
   getLoacl(rightImgUrlKey) && setCssVar('--right-img-url', getLoacl(rightImgUrlKey));
-  /*  */
+  // /*  */
   const changeImg = (cls) => {
     const msg = prompt('请输入头像图片链接');
     if (typeof msg !== "string" || !msg.trim().length) return;
@@ -90,10 +97,10 @@
 
 <template>
   <main @contextmenu.prevent="showNav($event)">
-    <div v-for="{cls, msg,time} of chatData" :class="cls" :time>
+    <div v-for="{cls, msg, time} of chatData" :class="cls" :time>
       <template v-if="cls==='time'">{{ new Date(time).toLocaleString() }}</template>
       <template v-else>
-        <div></div>
+        <div @click="changeImg(cls)"></div>
         <p>{{msg}}</p>
       </template>
     </div>
@@ -113,7 +120,7 @@
 
 <style>
   @import "./styles/tool.css";
-  
+
   body {
     margin: auto;
     padding: 40px 0;

@@ -1,12 +1,12 @@
 {
   "name": "chatego",
   "version": "0.0.3",
-  "description": "See for yourself",
+  "description": "talk to yourself",
   "scripts": {
     "release":"bumpp --all"
   },
   "keywords": [],
-  "author": "tofu-xx",
+  "author": "tofu-xx <tofu-xx@foxmail.com>",
   "license": "MIT",
   "devDependencies": {
     "bumpp": "^9.5.2"
